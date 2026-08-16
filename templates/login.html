@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Login - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Welcome Back 👋</h2>
+            <p>Login to continue shopping</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="you@example.com" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" id="loginPw" placeholder="Your password" required>
+                <label class="show-pw">
+                    <input type="checkbox" onclick="togglePw()"> Show password
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+
+        <p class="auth-footer">
+            New to ShopSocial? <a href="{{ url_for('register') }}">Create an account</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePw() {
+    const p = document.getElementById('loginPw');
+    p.type = p.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

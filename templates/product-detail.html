@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="detail-container">
+        
+        <!-- Left Side: Product Image Display -->
+        <div class="detail-left">
+            <div class="detail-img-box">
+                {% if product.category_id == 1 %}🎧{% elif product.category_id == 2 %}👕{% else %}📚{% endif %}
+            </div>
+        </div>
+
+        <!-- Right Side: Product Actions -->
+        <div class="detail-right">
+            <span class="brand-tag">{{ product.brand }}</span>
+            <h1 class="detail-title">{{ product.name }}</h1>
+            
+            <div class="rating-badge">
+                ★ {{ product.avg_rating }} <span>({{ product.total_reviews }} reviews)</span>
+            </div>
+
+            <div class="detail-price-box">
+                <span class="detail-price">₹{{ "%.0f"|format(product.price * (100 - product.discount_percent) / 100) }}</span>
+                <span class="detail-old-price">₹{{ "%.0f"|format(product.price) }}</span>
+                <span class="detail-discount-badge">{{ product.discount_percent }}% OFF</span>
+            </div>
+
+            <p class="detail-description">{{ product.description }}</p>
+
+            <div class="detail-actions">
+                <button class="btn-detail-cart">🛒 Add to Cart</button>
+                <button class="btn-detail-wishlist">❤️ Wishlist</button>
+            </div>
+
+            <div class="delivery-info">
+                <p>🚚 Free Shipping on orders over ₹499</p>
+                <p>📦 7-Day Replacement Policy</p>
+            </div>
+
+            <!-- ============ UNIQUE FEATURE 5: PRODUCT PASSPORT PREVIEW ============ -->
+            <div class="passport-preview-box">
+                <h3>📄 Digital Product Passport Enabled</h3>
+                <p>Purchasing this product generates a unique, verifiable digital registry tracking its entire lifecycle (authenticity, warranty, resale path).</p>
+                <div class="passport-icon-row">
+                    <span>🛡️ 1-Year Warranty</span>
+                    <span>✅ Verified Original</span>
+                    <span>🔄 Direct Resale Portal</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related %}
+    <h3 class="section-title" style="margin-top: 60px;">Similar Products You Might Like</h3>
+    <div class="product-grid">
+        {% for p in related %}
+        <div class="product-card" onclick="window.location.href='/product/{{ p.product_id }}'" style="cursor: pointer;">
+            <div class="product-img">
+                {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📚{% endif %}
+            </div>
+            <div class="product-body">
+                <span class="brand">{{ p.brand }}</span>
+                <h4>{{ p.name }}</h4>
+                <div class="price-row">
+                    <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

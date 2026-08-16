@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}ShopSocial - Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Welcome to ShopSocial</h1>
+    <p>Shop together with friends 🛍️ • Get verified product history 📄</p>
+
+    {% if user %}
+        <p class="hero-welcome">Great to see you, <strong>{{ user.full_name }}</strong>!</p>
+    {% else %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn-hero">Get Started Free</a>
+            <a href="{{ url_for('login') }}" class="btn-hero btn-outline">Login</a>
+        </div>
+    {% endif %}
+</section>
+
+<section class="page-container">
+    <h2 class="section-title">Shop by Category</h2>
+    <div class="category-grid">
+        {% for cat in categories %}
+        <div class="category-card">
+            <div class="cat-icon">
+                {% if cat.name == 'Electronics' %}📱
+                {% elif cat.name == 'Fashion' %}👕
+                {% elif cat.name == 'Books' %}📚
+                {% else %}🏠{% endif %}
+            </div>
+            <h4>{{ cat.name }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title">Featured Products</h2>
+    <div class="product-grid">
+        {% for p in products %}
+        <div class="product-card">
+            <div class="product-img">
+                {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📦{% endif %}
+            </div>
+            <div class="product-body">
+                <span class="brand">{{ p.brand }}</span>
+                <h4>{{ p.name }}</h4>
+                <p class="desc">{{ p.description }}</p>
+                <div class="price-row">
+                    <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                    <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
+                    <span class="discount">{{ p.discount_percent }}% off</span>
+                </div>
+                <button class="btn-cart">Add to Cart</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Profile - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">My Profile</h1>
+
+    <div class="profile-card">
+        <div class="profile-avatar">
+            {{ user_data.full_name[0].upper() }}
+        </div>
+
+        <div class="profile-info">
+            <div class="info-row">
+                <span class="label">Full Name</span>
+                <span class="value">{{ user_data.full_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email</span>
+                <span class="value">{{ user_data.email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Phone</span>
+                <span class="value">{{ user_data.phone or 'Not provided' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Account Type</span>
+                <span class="value"><span class="badge">{{ user_data.role|title }}</span></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Member Since</span>
+                <span class="value">{{ user_data.created_at.strftime('%d %B, %Y') }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

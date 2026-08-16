@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Shop Catalog - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="catalog-layout">
+        
+        <!-- ============ SIDEBAR FILTERS ============ -->
+        <aside class="sidebar">
+            <h3>Filters 🔍</h3>
+            
+            <form action="{{ url_for('products') }}" method="GET" id="filterForm">
+                <!-- Keep search query if already searched -->
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+
+                <div class="filter-section">
+                    <h4>Categories</h4>
+                    <label class="filter-radio">
+                        <input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %} onchange="this.form.submit()">
+                        All Categories
+                    </label>
+                    {% for cat in categories %}
+                    <label class="filter-radio">
+                        <input type="radio" name="category" value="{{ cat.name }}" {% if selected_category == cat.name %}checked{% endif %} onchange="this.form.submit()">
+                        {{ cat.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="filter-section">
+                    <h4>Sort By</h4>
+                    <select name="sort" onchange="this.form.submit()" class="filter-select">
+                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest Arrivals</option>
+                        <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    </select>
+                </div>
+                
+                <a href="{{ url_for('products') }}" class="btn-clear">Reset Filters</a>
+            </form>
+        </aside>
+
+        <!-- ============ MAIN CATALOG ============ -->
+        <main class="catalog-main">
+            <!-- Search bar -->
+            <form action="{{ url_for('products') }}" method="GET" class="search-bar-form">
+                {% if selected_category %}
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                {% endif %}
+                {% if sort %}
+                    <input type="hidden" name="sort" value="{{ sort }}">
+                {% endif %}
+                <input type="text" name="search" placeholder="Search products, brands, categories..." value="{{ search }}" class="search-input">
+                <button type="submit" class="btn-search">Search</button>
+            </form>
+
+            <div class="results-header">
+                <p>Showing <strong>{{ products|length }}</strong> products</p>
+                {% if search or selected_category %}
+                    <a href="{{ url_for('products') }}">Clear Search</a>
+                {% endif %}
+            </div>
+
+            <!-- Products Grid -->
+            {% if products %}
+                <div class="product-grid">
+                    {% for p in products %}
+                    <div class="product-card" onclick="window.location.href='/product/{{ p.product_id }}'" style="cursor: pointer;">
+                        <div class="product-img">
+                            {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📚{% endif %}
+                        </div>
+                        <div class="product-body">
+                            <span class="brand">{{ p.brand }}</span>
+                            <h4>{{ p.name }}</h4>
+                            <p class="desc">{{ p.description }}</p>
+                            <div class="price-row">
+                                <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                                <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
+                                <span class="discount">{{ p.discount_percent }}% off</span>
+                            </div>
+                            <button class="btn-cart" onclick="event.stopPropagation(); alert('Cart feature coming next!')">Add to Cart</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No products found 😢</h3>
+                    <p>Try matching other words, brands or clear your filters.</p>
+                </div>
+            {% endif %}
+        </main>
+        
+    </div>
+</div>
+{% endblock %}

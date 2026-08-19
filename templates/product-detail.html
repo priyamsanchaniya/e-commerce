@@ -30,8 +30,11 @@
             <p class="detail-description">{{ product.description }}</p>
 
             <div class="detail-actions">
-                <button class="btn-detail-cart">🛒 Add to Cart</button>
-                <button class="btn-detail-wishlist">❤️ Wishlist</button>
+                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.product_id) }}" style="flex:2;display:flex;gap:10px">
+                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" class="qty-input">
+                    <button type="submit" class="btn-detail-cart" style="flex:1">🛒 Add to Cart</button>
+                </form>
+                <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" class="btn-detail-wishlist" style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--dark)">❤️ Wishlist</a>
             </div>
 
             <div class="delivery-info">

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}Social Cart - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="sc-header">
+        <div>
+            <h1 class="page-title">👥 Social Cart</h1>
+            <p class="sc-session">Session: <code>{{ session_id }}</code></p>
+        </div>
+        <div class="sc-share">
+            <button onclick="copyLink()" class="btn-share">📋 Copy Share Link</button>
+            <p class="sc-share-hint">Share this link with friends to get group discounts!</p>
+        </div>
+    </div>
+
+    <!-- Discount Banner -->
+    <div class="sc-discount-banner discount-tier-{{ discount }}">
+        <span class="sc-discount-amount">{{ discount }}% GROUP DISCOUNT</span>
+        <span class="sc-discount-info">
+            {% if discount == 0 %}
+                Invite 1 more friend to unlock 5% off!
+            {% elif discount == 5 %}
+                {{ len(members) }} members joined. Invite {{ 3 - len(members) }} more for 10% off!
+            {% elif discount == 10 %}
+                {{ len(members) }} members joined. Invite {{ 5 - len(members) }} more for 15% off!
+            {% else %}
+                Maximum discount unlocked! 🎉
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="sc-layout">
+
+        <!-- LEFT: Cart Items + Product Picker -->
+        <div class="sc-left">
+
+            <!-- Current Items -->
+            <div class="sc-section">
+                <h3>🛒 Cart Items ({{ items|length }})</h3>
+                {% if items %}
+                <div class="sc-items-list">
+                    {% for item in items %}
+                    <div class="sc-item">
+                        <div class="sc-item-img">
+                            {% if item.category_id == 1 %}🎧{% elif item.category_id == 2 %}👕{% else %}📚{% endif %}
+                        </div>
+                        <div class="sc-item-info">
+                            <strong>{{ item.name }}</strong>
+                            <span class="sc-item-brand">{{ item.brand }}</span>
+                            <p class="sc-item-meta">
+                                Qty: {{ item.quantity }} × ₹{{ "%.0f"|format(item.final_price) }}
+                                <span class="sc-added-by">added by {{ item.added_by_name or 'member' }}</span>
+                            </p>
+                        </div>
+                        <a href="{{ url_for('social_cart_remove', session_id=session_id, item_id=item.id) }}"
+                           class="sc-remove-btn" title="Remove">✕</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="sc-empty">No items yet. Add products below! 👇</p>
+                {% endif %}
+            </div>
+
+            <!-- Product Picker -->
+            <div class="sc-section">
+                <h3>➕ Add Products</h3>
+                <div class="sc-product-picker">
+                    {% for p in all_products %}
+                    <form method="POST" action="{{ url_for('social_cart_add', session_id=session_id, product_id=p.product_id) }}" class="sc-picker-item">
+                        <span class="sc-picker-img">
+                            {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📚{% endif %}
+                        </span>
+                        <div class="sc-picker-info">
+                            <strong>{{ p.name }}</strong>
+                            <span>₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                        </div>
+                        <input type="number" name="quantity" value="1" min="1" max="10" class="sc-qty-input">
+                        <button type="submit" class="sc-add-btn">Add</button>
+                    </form>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: Members + Chat + Summary -->
+        <div class="sc-right">
+
+            <!-- Members -->
+            <div class="sc-section">
+                <h3>👥 Members ({{ len(members) }})</h3>
+                <div class="sc-members" id="membersList">
+                    {% for m in members %}
+                    <div class="sc-member">
+                        <span class="sc-avatar">{{ m.full_name[0].upper() }}</span>
+                        <span class="sc-member-name">{{ m.full_name }}</span>
+                        {% if m.user_id == session.user_id %}<span class="sc-you">(You)</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div class="sc-section sc-chat-section">
+                <h3>💬 Group Chat</h3>
+                <div class="sc-chat-box" id="chatBox">
+                    {% for msg in messages %}
+                    <div class="sc-chat-msg {% if msg.user_id == session.user_id %}sc-msg-own{% endif %}">
+                        <span class="sc-msg-name">{{ msg.full_name }}:</span>
+                        <span class="sc-msg-text">{{ msg.message }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <form id="chatForm" class="sc-chat-input">
+                    <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+
+            <!-- Summary -->
+            <div class="sc-section sc-summary">
+                <h3>📊 Group Summary</h3>
+                <div class="sc-sum-row"><span>Subtotal</span><span>₹{{ "%.0f"|format(subtotal) }}</span></div>
+                <div class="sc-sum-row green"><span>Group Discount ({{ discount }}%)</span><span>− ₹{{ "%.0f"|format(group_savings) }}</span></div>
+                <div class="sc-sum-row total"><span>Total</span><span>₹{{ "%.0f"|format(total) }}</span></div>
+                <div class="sc-sum-row per-person"><span>Per Person ({{ len(members) }})</span><span>₹{{ "%.0f"|format(per_person) }}</span></div>
+
+                {% if items %}
+                <form method="POST" action="{{ url_for('social_cart_checkout', session_id=session_id) }}">
+                    <button type="submit" class="btn-checkout" onclick="return confirm('Place group order?')">
+                        🎉 Checkout Together
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const socket = io();
+    const sessionId = '{{ session_id }}';
+    const chatBox = document.getElementById('chatBox');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+
+    // Join the room
+    socket.emit('join_cart', { session_id: sessionId });
+
+    // Leave room on page unload
+    window.addEventListener('beforeunload', () => {
+        socket.emit('leave_cart', { session_id: sessionId });
+    });
+
+    // Send chat message
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (msg) {
+            socket.emit('chat_message', { session_id: sessionId, message: msg });
+            chatInput.value = '';
+        }
+    });
+
+    // Receive new chat message
+    socket.on('new_message', (data) => {
+        const div = document.createElement('div');
+        div.className = 'sc-chat-msg';
+        div.innerHTML = `<span class="sc-msg-name">${data.user_name}:</span> <span class="sc-msg-text">${data.message}</span>`;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    // Member joined/left notification
+    socket.on('member_joined', (data) => {
+        showNotification(data.message, 'success');
+        location.reload(); // Refresh to show updated discount
+    });
+
+    socket.on('member_left', (data) => {
+        showNotification(data.message, 'error');
+        location.reload();
+    });
+
+    // Cart updated notification
+    socket.on('cart_updated', (data) => {
+        showNotification(data.message, 'success');
+        setTimeout(() => location.reload(), 1000);
+    });
+
+    // Cart checked out
+    socket.on('cart_checked_out', (data) => {
+        showNotification(data.message, 'success');
+        setTimeout(() => location.reload(), 2000);
+    });
+
+    // Copy share link
+    function copyLink() {
+        const url = window.location.origin + '/social-cart/' + sessionId;
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Link copied! Share with friends 📋', 'success');
+        });
+    }
+
+    // Show toast notification
+    function showNotification(message, type) {
+        const flash = document.createElement('div');
+        flash.className = `flash flash-${type}`;
+        flash.innerHTML = `<span>${message}</span>`;
+        document.querySelector('.flash-container').appendChild(flash);
+        setTimeout(() => flash.remove(), 4000);
+    }
+
+    // Auto-scroll chat
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock %}

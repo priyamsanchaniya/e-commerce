@@ -80,7 +80,10 @@
                                 <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
                                 <span class="discount">{{ p.discount_percent }}% off</span>
                             </div>
-                            <button class="btn-cart" onclick="event.stopPropagation(); alert('Cart feature coming next!')">Add to Cart</button>
+                            <!-- NEW CODE -->
+                             <form method="POST" action="{{ url_for('add_to_cart', product_id=p.product_id) }}" onclick="event.stopPropagation()">
+                                <button type="submit" class="btn-cart">Add to Cart</button>
+                            </form>
                         </div>
                     </div>
                     {% endfor %}

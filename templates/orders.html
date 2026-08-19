@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My Orders - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">📦 My Orders</h1>
+
+    {% if orders %}
+        {% for o in orders %}
+        <div class="order-card">
+            <div class="order-head">
+                <div>
+                    <strong>Order #{{ o.order_id }}</strong>
+                    <span class="order-date">{{ o.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                </div>
+                <span class="status-badge status-{{ o.order_status }}">{{ o.order_status|title }}</span>
+            </div>
+
+            <div class="order-body">
+                <div><span class="label">Items</span><strong>{{ o.item_count }}</strong></div>
+                <div><span class="label">Total</span><strong>₹{{ "%.0f"|format(o.total_amount) }}</strong></div>
+                <div><span class="label">Payment</span><strong>{{ o.payment_method }}</strong></div>
+                <div><span class="label">Status</span><strong>{{ o.payment_status|title }}</strong></div>
+            </div>
+
+            <div class="order-foot">
+                <a href="{{ url_for('order_detail', order_id=o.order_id) }}" class="btn-small">View Details & Passports</a>
+                {% if o.order_status == 'placed' %}
+                <a href="{{ url_for('cancel_order', order_id=o.order_id) }}" class="btn-small btn-danger"
+                   onclick="return confirm('Cancel this order?')">Cancel Order</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <div style="font-size:4rem">📦</div>
+        <h3>No orders yet</h3>
+        <a href="{{ url_for('products') }}" class="btn-hero" style="background:var(--primary);color:#fff;margin-top:18px">Shop Now</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Checkout - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">Checkout</h1>
+
+    <form method="POST" class="cart-layout">
+        <div class="checkout-form">
+            <div class="checkout-box">
+                <h3>📍 Delivery Address</h3>
+                <div class="form-group">
+                    <label>Full Name <span class="req">*</span></label>
+                    <input type="text" name="full_name" value="{{ user.full_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number <span class="req">*</span></label>
+                    <input type="text" name="phone" maxlength="10" required>
+                </div>
+                <div class="form-group">
+                    <label>Address (House No, Street, Area) <span class="req">*</span></label>
+                    <input type="text" name="address" required>
+                </div>
+                <div class="two-col">
+                    <div class="form-group">
+                        <label>City <span class="req">*</span></label>
+                        <input type="text" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode <span class="req">*</span></label>
+                        <input type="text" name="pincode" maxlength="6" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-box">
+                <h3>💳 Payment Method</h3>
+                <label class="pay-option">
+                    <input type="radio" name="payment_method" value="COD" checked>
+                    <div><strong>Cash on Delivery</strong><small>Pay when your order arrives</small></div>
+                </label>
+                <label class="pay-option">
+                    <input type="radio" name="payment_method" value="UPI">
+                    <div><strong>UPI / Wallet</strong><small>Simulated payment (demo mode)</small></div>
+                </label>
+                <label class="pay-option">
+                    <input type="radio" name="payment_method" value="Card">
+                    <div><strong>Debit / Credit Card</strong><small>Simulated payment (demo mode)</small></div>
+                </label>
+            </div>
+
+            <div class="checkout-box">
+                <h3>📦 Order Items ({{ items|length }})</h3>
+                {% for item in items %}
+                <div class="checkout-item">
+                    <span>{{ item.name }} × {{ item.quantity }}</span>
+                    <strong>₹{{ "%.0f"|format(item.final_price * item.quantity) }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <aside class="cart-summary">
+            <h3>Price Details</h3>
+            <div class="sum-row"><span>Price</span><span>₹{{ "%.0f"|format(totals.mrp_total) }}</span></div>
+            <div class="sum-row green"><span>Discount</span><span>− ₹{{ "%.0f"|format(totals.savings) }}</span></div>
+            <div class="sum-row"><span>Delivery</span>
+                <span>{% if totals.delivery == 0 %}<span class="green">FREE</span>{% else %}₹{{ totals.delivery }}{% endif %}</span></div>
+            <div class="sum-row total"><span>Total Payable</span><span>₹{{ "%.0f"|format(totals.total) }}</span></div>
+
+            <button type="submit" class="btn-checkout">Place Order</button>
+
+            <div class="passport-note">
+                🟢 On placing this order, <strong>{{ items|sum(attribute='quantity') }} Digital Product Passport(s)</strong> will be auto-generated.
+            </div>
+        </aside>
+    </form>
+</div>
+{% endblock %}

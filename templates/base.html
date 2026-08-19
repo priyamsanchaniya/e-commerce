@@ -8,22 +8,26 @@
 </head>
 <body>
 
-<!-- ============ NAVBAR ============ -->
 <nav class="navbar">
     <div class="nav-container">
         <a href="{{ url_for('home') }}" class="logo">🛒 ShopSocial</a>
 
         <div class="nav-links">
             <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('products') }}">Products</a> <!-- ✅ New -->
-            <a href="#">Cart</a>
+            <a href="{{ url_for('products') }}">Products</a>
+            <a href="{{ url_for('cart') }}" class="cart-link">
+                Cart
+                {% if cart_count > 0 %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+            </a>
+
             {% if user %}
                 <div class="user-menu">
                     <span class="user-greeting">👤 {{ user.full_name.split()[0] }}</span>
                     <div class="dropdown">
                         <a href="{{ url_for('profile') }}">My Profile</a>
-                        <a href="#">My Orders</a>
-                        <a href="#">Wishlist</a>
+                        <a href="{{ url_for('orders') }}">My Orders</a>
+                        <a href="{{ url_for('my_passports') }}">My Passports</a>
+                        <a href="{{ url_for('wishlist') }}">Wishlist</a>
                         <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
                     </div>
                 </div>
@@ -35,7 +39,6 @@
     </div>
 </nav>
 
-<!-- ============ FLASH MESSAGES ============ -->
 <div class="flash-container">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -49,19 +52,16 @@
     {% endwith %}
 </div>
 
-<!-- ============ PAGE CONTENT ============ -->
 <main>
     {% block content %}{% endblock %}
 </main>
 
-<!-- ============ FOOTER ============ -->
 <footer class="footer">
     <p>🛒 <strong>ShopSocial</strong> — Social Cart & Digital Product Passport</p>
     <p class="footer-sub">Diploma Micro Project © 2026</p>
 </footer>
 
 <script>
-    // Auto-hide flash messages after 4 seconds
     setTimeout(() => {
         document.querySelectorAll('.flash').forEach(el => {
             el.style.opacity = '0';

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.order_id }} - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <a href="{{ url_for('orders') }}" class="back-link">← Back to Orders</a>
+    <h1 class="page-title">Order #{{ order.order_id }}</h1>
+
+    <!-- Tracking timeline -->
+    <div class="checkout-box">
+        <h3>Order Tracking</h3>
+        {% set steps = ['placed','processing','shipped','delivered'] %}
+        {% set current = steps.index(order.order_status) if order.order_status in steps else -1 %}
+        <div class="timeline">
+            {% for s in steps %}
+            <div class="tl-step {% if loop.index0 <= current %}done{% endif %}">
+                <div class="tl-dot">{{ loop.index }}</div>
+                <span>{{ s|title }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% if order.order_status == 'cancelled' %}
+            <p style="color:var(--danger);font-weight:700;margin-top:14px">❌ This order was cancelled.</p>
+        {% endif %}
+    </div>
+
+    <div class="checkout-box">
+        <h3>📍 Delivery Address</h3>
+        <p><strong>{{ order.full_name }}</strong> · {{ order.phone }}</p>
+        <p style="color:var(--gray)">{{ order.address }}</p>
+    </div>
+
+    <!-- Items + Passports -->
+    <div class="checkout-box">
+        <h3>📦 Items in this Order</h3>
+        {% for item in items %}
+        <div class="order-item-row">
+            <div class="cart-img" style="width:70px;height:70px;font-size:2rem">
+                {% if item.category_id == 1 %}🎧{% elif item.category_id == 2 %}👕{% else %}📚{% endif %}
+            </div>
+            <div style="flex:1">
+                <span class="brand">{{ item.brand }}</span>
+                <h4>{{ item.name }}</h4>
+                <p style="color:var(--gray);font-size:.88rem">Qty: {{ item.quantity }} × ₹{{ "%.0f"|format(item.price_at_purchase) }}</p>
+            </div>
+            <strong>₹{{ "%.0f"|format(item.price_at_purchase * item.quantity) }}</strong>
+        </div>
+
+        <!-- 🟢 FEATURE 5: PASSPORTS -->
+        {% for pp in item.passports %}
+        <div class="passport-card">
+            <div class="pp-head">
+                <span class="pp-title">📄 Digital Product Passport</span>
+                <span class="pp-status">{{ pp.status|upper }}</span>
+            </div>
+            <div class="pp-grid">
+                <div><span>Passport ID</span><strong>{{ pp.passport_id }}</strong></div>
+                <div><span>Authenticity Code</span><strong>{{ pp.authenticity_code }}</strong></div>
+                <div><span>Purchase Date</span><strong>{{ pp.purchase_date.strftime('%d %b %Y') }}</strong></div>
+                <div><span>Warranty Till</span><strong>{{ pp.warranty_expiry.strftime('%d %b %Y') }}</strong></div>
+            </div>
+            <p class="pp-foot">✅ Verified Original · 🔄 Resale-ready · 🛡️ Warranty tracked</p>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="checkout-box">
+        <div class="sum-row total"><span>Total Paid</span><span>₹{{ "%.0f"|format(order.total_amount) }}</span></div>
+        <div class="sum-row"><span>Payment Method</span><span>{{ order.payment_method }}</span></div>
+    </div>
+</div>
+{% endblock %}

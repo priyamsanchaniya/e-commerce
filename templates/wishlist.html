@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Wishlist - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">❤️ My Wishlist</h1>
+
+    {% if items %}
+    <div class="product-grid">
+        {% for p in items %}
+        <div class="product-card">
+            <div class="product-img" onclick="location.href='/product/{{ p.product_id }}'" style="cursor:pointer">
+                {% if p.category_id == 1 %}🎧
+                {% elif p.category_id == 2 %}👕
+                {% else %}📚{% endif %}
+            </div>
+            <div class="product-body">
+                <span class="brand">{{ p.brand }}</span>
+                <h4>{{ p.name }}</h4>
+                <div class="price-row">
+                    <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                    <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
+                </div>
+                <form method="POST" action="{{ url_for('add_to_cart', product_id=p.product_id) }}">
+                    <button type="submit" class="btn-cart">Add to Cart</button>
+                </form>
+                <a href="{{ url_for('remove_wishlist', wishlist_id=p.wishlist_id) }}" class="remove-link" style="display:block;text-align:center;margin-top:8px">Remove</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div style="font-size:4rem">❤️</div>
+        <h3>Your wishlist is empty</h3>
+        <p>Save products you like by clicking the ❤️ button.</p>
+        <a href="{{ url_for('products') }}" class="btn-hero" style="background:var(--primary);color:#fff;margin-top:18px">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

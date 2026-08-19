@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}My Product Passports - ShopSocial{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">📄 My Digital Passports</h1>
+    <p>Manage your product authenticity and warranty status here.</p>
+
+    {% if passports %}
+    <div class="passport-grid">
+        {% for pp in passports %}
+        <div class="passport-mini-card">
+            <div class="pp-icon">
+                {% if pp.category_id == 1 %}🎧{% elif pp.category_id == 2 %}👕{% else %}📚{% endif %}
+            </div>
+            <div class="pp-info">
+                <strong>{{ pp.name }}</strong>
+                <p>{{ pp.brand }}</p>
+                <span class="status-badge">{{ pp.status|upper }}</span>
+            </div>
+            <a href="{{ url_for('passport_detail', passport_id=pp.passport_id) }}" class="btn-small">View Passport</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No passports generated yet. Buy some products first! 🛍️</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

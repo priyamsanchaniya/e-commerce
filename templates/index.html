@@ -1,57 +1,233 @@
 {% extends "base.html" %}
+
 {% block title %}ShopSocial - Home{% endblock %}
 
 {% block content %}
+
 <section class="hero">
     <h1>Welcome to ShopSocial</h1>
     <p>Shop together with friends 🛍️ • Get verified product history 📄</p>
 
     {% if user %}
-        <p class="hero-welcome">Great to see you, <strong>{{ user.full_name }}</strong>!</p>
-    {% else %}
+        <p class="hero-welcome">
+            Great to see you, <strong>{{ user.full_name }}</strong>!
+        </p>
+
         <div class="hero-buttons">
+            {% if user %}
+            <a href="{{ url_for('products') }}" class="btn-hero">Start Shopping</a>
+            <a href="{{ url_for('social_cart_create') }}" class="btn-hero btn-outline">👥 Create Social Cart</a>
+            {% else %}
             <a href="{{ url_for('register') }}" class="btn-hero">Get Started Free</a>
             <a href="{{ url_for('login') }}" class="btn-hero btn-outline">Login</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn-hero">
+                Get Started Free
+            </a>
+
+            <a href="{{ url_for('login') }}" class="btn-hero btn-outline">
+                Login
+            </a>
         </div>
     {% endif %}
 </section>
 
 <section class="page-container">
+
+    <!-- Categories -->
     <h2 class="section-title">Shop by Category</h2>
+
     <div class="category-grid">
         {% for cat in categories %}
-        <div class="category-card">
-            <div class="cat-icon">
-                {% if cat.name == 'Electronics' %}📱
-                {% elif cat.name == 'Fashion' %}👕
-                {% elif cat.name == 'Books' %}📚
-                {% else %}🏠{% endif %}
-            </div>
-            <h4>{{ cat.name }}</h4>
-        </div>
+            <a href="{{ url_for('products', category=cat.name) }}" class="category-card">
+                <div class="cat-icon">
+                    {% if cat.name == 'Electronics' %}
+                        📱
+                    {% elif cat.name == 'Fashion' %}
+                        👕
+                    {% elif cat.name == 'Books' %}
+                        📚
+                    {% else %}
+                        🛍️
+                    {% endif %}
+                </div>
+                <h4>{{ cat.name }}</h4>
+            </a>
         {% endfor %}
     </div>
 
-    <h2 class="section-title">Featured Products</h2>
-    <div class="product-grid">
-        {% for p in products %}
-        <div class="product-card">
-            <div class="product-img">
-                {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📦{% endif %}
-            </div>
-            <div class="product-body">
-                <span class="brand">{{ p.brand }}</span>
-                <h4>{{ p.name }}</h4>
-                <p class="desc">{{ p.description }}</p>
-                <div class="price-row">
-                    <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
-                    <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
-                    <span class="discount">{{ p.discount_percent }}% off</span>
-                </div>
-                <button class="btn-cart">Add to Cart</button>
-            </div>
-        </div>
-        {% endfor %}
+    <!-- Featured Products Heading -->
+    <div class="section-head">
+        <h2 class="section-title">Featured Products</h2>
+
+        <a href="{{ url_for('products') }}" class="view-all">
+            View All →
+        </a>
     </div>
+
+    <!-- Featured Products -->
+    {% if products %}
+        <div class="product-grid">
+            {% for p in products %}
+                <div class="product-card">
+
+                    <!-- Product Image: link to detail page -->
+                    <a href="{{ url_for('product_detail', product_id=p.product_id) }}" class="product-img product-link">
+                        {% if p.category_id == 1 %}
+                            🎧
+                        {% elif p.category_id == 2 %}
+                            👕
+                        {% elif p.category_id == 3 %}
+                            📚
+                        {% else %}
+                            📦
+                        {% endif %}
+
+                        {% if p.discount_percent > 0 %}
+                            <span class="corner-badge">
+                                {{ p.discount_percent }}% OFF
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <div class="product-body">
+                        <span class="brand">{{ p.brand }}</span>
+
+                        <a href="{{ url_for('product_detail', product_id=p.product_id) }}" class="product-name-link">
+                            <h4>{{ p.name }}</h4>
+                        </a>
+
+                        <p class="desc">{{ p.description }}</p>
+
+                        <div class="price-row">
+                            <span class="price">
+                                ₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}
+                            </span>
+
+                            {% if p.discount_percent > 0 %}
+                                <span class="old-price">
+                                    ₹{{ "%.0f"|format(p.price) }}
+                                </span>
+
+                                <span class="discount">
+                                    {{ p.discount_percent }}% off
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if p.stock_quantity > 0 %}
+                            <div class="card-actions">
+
+                                <form method="POST" action="{{ url_for('add_to_cart', product_id=p.product_id) }}">
+                                    <button type="submit" class="btn-cart">
+                                        Add to Cart
+                                    </button>
+                                </form>
+
+                                <a href="{{ url_for('add_to_wishlist', product_id=p.product_id) }}"
+                                   class="btn-heart"
+                                   title="Add to Wishlist">
+                                    ❤️
+                                </a>
+
+                            </div>
+                        {% else %}
+                            <button type="button" class="btn-cart btn-disabled" disabled>
+                                Out of Stock
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No products available yet 📦</h3>
+            <p>Please check back soon.</p>
+        </div>
+    {% endif %}
+
+    <!-- Unique Features Section -->
+    <h2 class="section-title feature-heading">Why ShopSocial?</h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card feature-social">
+            <div class="feature-icon">👥</div>
+
+            <h3>Social Cart — Group Buying</h3>
+
+            <p>
+                Create a shared cart, invite friends using a link,
+                and get bigger discounts when more members join.
+            </p>
+
+            <div class="feature-tiers">
+                <span>2 people → 5% off</span>
+                <span>3–4 people → 10% off</span>
+                <span>5+ people → 15% off</span>
+            </div>
+
+            <span class="feature-tag">Coming Soon ⚡</span>
+        </div>
+
+        <div class="feature-card feature-passport">
+            <div class="feature-icon">📄</div>
+
+            <h3>Digital Product Passport</h3>
+
+            <p>
+                Every purchased product receives a unique passport with
+                authenticity details, warranty tracking, ownership history,
+                and future resale support.
+            </p>
+
+            <div class="feature-tiers">
+                <span>🛡️ Warranty Tracked</span>
+                <span>✅ Verified Original</span>
+                <span>🔄 Resale Ready</span>
+            </div>
+
+            <span class="feature-tag feature-tag-live">Live Now ✓</span>
+        </div>
+
+    </div>
+
+    <!-- How It Works -->
+    <h2 class="section-title feature-heading">How It Works</h2>
+
+    <div class="steps-grid">
+
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <h4>Browse Products</h4>
+            <p>Explore products and select items you want to buy.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <h4>Add to Cart</h4>
+            <p>Add items to your personal cart or social cart.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <h4>Place Order</h4>
+            <p>Enter delivery details and place your order securely.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">4</div>
+            <h4>Get Passport</h4>
+            <p>Your purchased item gets a verified Digital Product Passport.</p>
+        </div>
+
+    </div>
+
 </section>
+
 {% endblock %}

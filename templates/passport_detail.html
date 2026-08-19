@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Passport {{ pp.passport_id }}{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <a href="{{ url_for('my_passports') }}" class="back-link">← Back to my items</a>
+    
+    <div class="passport-full">
+        <div class="pp-header">
+            <div>
+                <h1>Digital Product Passport</h1>
+                <p>Authenticity Verification Certificate</p>
+            </div>
+            <div class="pp-qr">
+                <span>[ QR CODE PLACEHOLDER ]</span>
+            </div>
+        </div>
+
+        <div class="pp-main">
+            <div class="pp-section">
+                <h3>Product Details</h3>
+                <p><strong>Item:</strong> {{ pp.name }} ({{ pp.brand }})</p>
+                <p><strong>Passport ID:</strong> <code>{{ pp.passport_id }}</code></p>
+                <p><strong>Authenticity Code:</strong> <code>{{ pp.authenticity_code }}</code></p>
+            </div>
+            
+            <div class="pp-section">
+                <h3>Ownership & Warranty</h3>
+                <p><strong>Status:</strong> <span class="badge">{{ pp.status|upper }}</span></p>
+                <p><strong>Warranty Expiry:</strong> {{ pp.warranty_expiry.strftime('%d %b %Y') }}</p>
+            </div>
+        </div>
+
+        <div class="pp-history">
+            <h3>📜 Event History</h3>
+            {% for h in history %}
+            <div class="history-item">
+                <div class="date">{{ h.event_date.strftime('%d %b, %Y') }}</div>
+                <div class="desc"><strong>{{ h.event_type|title }}:</strong> {{ h.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

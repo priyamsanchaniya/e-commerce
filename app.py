@@ -765,5 +765,6 @@ def handle_chat_message(data):
 def handle_disconnect():
     """Clean up on disconnect"""
     pass
+import os
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=False)

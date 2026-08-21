@@ -2,7 +2,5 @@ Flask==3.0.3
 Werkzeug==3.0.3
 psycopg2-binary==2.9.9
 Flask-SocketIO==5.3.6
-python-socketio==5.11.3
-python-engineio==4.9.1
 gunicorn==22.0.0
 eventlet==0.36.1

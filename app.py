@@ -714,17 +714,17 @@ def social_cart_checkout(session_id):
 # ==================================================
 @socketio.on('join_cart')
 def handle_join_cart(data):
-    """User joins a social cart room"""
     session_id = data.get('session_id')
     user_id = session.get('user_id')
     user_name = session.get('full_name', 'Anonymous')
 
     if session_id and user_id:
         join_room(session_id)
+
         emit('member_joined', {
             'user_name': user_name,
             'message': f"{user_name} joined the cart!"
-        }, room=session_id)
+        }, room=session_id, include_self=False)
 
 
 @socketio.on('leave_cart')

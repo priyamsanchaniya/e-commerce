@@ -1,29 +1,44 @@
 {% extends "base.html" %}
+{% from "_macros.html" import product_image %}
+
 {% block title %}Shop Catalog - ShopSocial{% endblock %}
 
 {% block content %}
 <div class="page-container">
     <div class="catalog-layout">
-        
+
         <!-- ============ SIDEBAR FILTERS ============ -->
         <aside class="sidebar">
             <h3>Filters 🔍</h3>
-            
+
             <form action="{{ url_for('products') }}" method="GET" id="filterForm">
-                <!-- Keep search query if already searched -->
                 {% if search %}
                     <input type="hidden" name="search" value="{{ search }}">
                 {% endif %}
 
                 <div class="filter-section">
                     <h4>Categories</h4>
+
                     <label class="filter-radio">
-                        <input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %} onchange="this.form.submit()">
+                        <input
+                            type="radio"
+                            name="category"
+                            value=""
+                            {% if not selected_category %}checked{% endif %}
+                            onchange="this.form.submit()"
+                        >
                         All Categories
                     </label>
+
                     {% for cat in categories %}
                     <label class="filter-radio">
-                        <input type="radio" name="category" value="{{ cat.name }}" {% if selected_category == cat.name %}checked{% endif %} onchange="this.form.submit()">
+                        <input
+                            type="radio"
+                            name="category"
+                            value="{{ cat.name }}"
+                            {% if selected_category == cat.name %}checked{% endif %}
+                            onchange="this.form.submit()"
+                        >
                         {{ cat.name }}
                     </label>
                     {% endfor %}
@@ -37,14 +52,14 @@
                         <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
                     </select>
                 </div>
-                
+
                 <a href="{{ url_for('products') }}" class="btn-clear">Reset Filters</a>
             </form>
         </aside>
 
         <!-- ============ MAIN CATALOG ============ -->
         <main class="catalog-main">
-            <!-- Search bar -->
+
             <form action="{{ url_for('products') }}" method="GET" class="search-bar-form">
                 {% if selected_category %}
                     <input type="hidden" name="category" value="{{ selected_category }}">
@@ -52,7 +67,13 @@
                 {% if sort %}
                     <input type="hidden" name="sort" value="{{ sort }}">
                 {% endif %}
-                <input type="text" name="search" placeholder="Search products, brands, categories..." value="{{ search }}" class="search-input">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands, categories..."
+                    value="{{ search }}"
+                    class="search-input"
+                >
                 <button type="submit" class="btn-search">Search</button>
             </form>
 
@@ -63,39 +84,84 @@
                 {% endif %}
             </div>
 
-            <!-- Products Grid -->
             {% if products %}
-                <div class="product-grid">
-                    {% for p in products %}
-                    <div class="product-card" onclick="window.location.href='/product/{{ p.product_id }}'" style="cursor: pointer;">
+            <div class="product-grid">
+                {% for p in products %}
+                <div class="product-card">
+
+                    <a
+                        href="{{ url_for('product_detail', product_id=p.product_id) }}"
+                        class="product-image-link"
+                    >
                         <div class="product-img">
-                            {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📚{% endif %}
+                            {{ product_image(p.category_id, p.name, 'card') }}
+
+                            {% if p.discount_percent > 0 %}
+                                <span class="corner-badge">{{ p.discount_percent }}% OFF</span>
+                            {% endif %}
                         </div>
-                        <div class="product-body">
-                            <span class="brand">{{ p.brand }}</span>
+                    </a>
+
+                    <div class="product-body">
+                        <span class="brand">{{ p.brand }}</span>
+
+                        <a
+                            href="{{ url_for('product_detail', product_id=p.product_id) }}"
+                            class="product-name-link"
+                        >
                             <h4>{{ p.name }}</h4>
-                            <p class="desc">{{ p.description }}</p>
-                            <div class="price-row">
-                                <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                        </a>
+
+                        <p class="desc">{{ p.description }}</p>
+
+                        <div class="price-row">
+                            <span class="price">
+                                ₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}
+                            </span>
+
+                            {% if p.discount_percent > 0 %}
                                 <span class="old-price">₹{{ "%.0f"|format(p.price) }}</span>
                                 <span class="discount">{{ p.discount_percent }}% off</span>
-                            </div>
-                            <!-- NEW CODE -->
-                             <form method="POST" action="{{ url_for('add_to_cart', product_id=p.product_id) }}" onclick="event.stopPropagation()">
-                                <button type="submit" class="btn-cart">Add to Cart</button>
-                            </form>
+                            {% endif %}
                         </div>
+
+                        {% if p.stock_quantity > 0 %}
+                            <div class="card-actions">
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('add_to_cart', product_id=p.product_id) }}"
+                                    class="product-cart-form"
+                                >
+                                    <button type="submit" class="btn-cart">🛒 Add to Cart</button>
+                                </form>
+
+                                <a
+                                    href="{{ url_for('add_to_wishlist', product_id=p.product_id) }}"
+                                    class="btn-heart"
+                                    title="Add to Wishlist"
+                                >
+                                    ❤️
+                                </a>
+                            </div>
+                        {% else %}
+                            <button type="button" class="btn-cart btn-disabled" disabled>
+                                Out of Stock
+                            </button>
+                        {% endif %}
                     </div>
-                    {% endfor %}
+
                 </div>
+                {% endfor %}
+            </div>
             {% else %}
                 <div class="empty-state">
                     <h3>No products found 😢</h3>
-                    <p>Try matching other words, brands or clear your filters.</p>
+                    <p>Try different keywords or clear your filters.</p>
                 </div>
             {% endif %}
+
         </main>
-        
+
     </div>
 </div>
 {% endblock %}

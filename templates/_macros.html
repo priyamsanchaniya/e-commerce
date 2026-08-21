@@ -1,0 +1,21 @@
+{% macro product_image(category_id, alt_text='Product', size='card') %}
+
+    {% if category_id == 1 %}
+        {% set image_url = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=500&fit=crop&q=80' %}
+    {% elif category_id == 2 %}
+        {% set image_url = 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=500&fit=crop&q=80' %}
+    {% elif category_id == 3 %}
+        {% set image_url = 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&h=500&fit=crop&q=80' %}
+    {% else %}
+        {% set image_url = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=500&fit=crop&q=80' %}
+    {% endif %}
+
+    <img
+        src="{{ image_url }}"
+        alt="{{ alt_text }}"
+        class="product-photo product-photo-{{ size }}"
+        loading="lazy"
+        onerror="this.src='https://placehold.co/600x500/e9e9f2/555?text=Product'"
+    >
+
+{% endmacro %}

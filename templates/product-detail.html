@@ -1,40 +1,76 @@
 {% extends "base.html" %}
+{% from "_macros.html" import product_image %}
+
 {% block title %}{{ product.name }} - ShopSocial{% endblock %}
 
 {% block content %}
 <div class="page-container">
     <div class="detail-container">
-        
-        <!-- Left Side: Product Image Display -->
+
+        <!-- Left: Product Image -->
         <div class="detail-left">
             <div class="detail-img-box">
-                {% if product.category_id == 1 %}🎧{% elif product.category_id == 2 %}👕{% else %}📚{% endif %}
+                {{ product_image(product.category_id, product.name, 'detail') }}
             </div>
         </div>
 
-        <!-- Right Side: Product Actions -->
+        <!-- Right: Product Info -->
         <div class="detail-right">
             <span class="brand-tag">{{ product.brand }}</span>
             <h1 class="detail-title">{{ product.name }}</h1>
-            
+
             <div class="rating-badge">
                 ★ {{ product.avg_rating }} <span>({{ product.total_reviews }} reviews)</span>
             </div>
 
             <div class="detail-price-box">
-                <span class="detail-price">₹{{ "%.0f"|format(product.price * (100 - product.discount_percent) / 100) }}</span>
-                <span class="detail-old-price">₹{{ "%.0f"|format(product.price) }}</span>
-                <span class="detail-discount-badge">{{ product.discount_percent }}% OFF</span>
+                <span class="detail-price">
+                    ₹{{ "%.0f"|format(product.price * (100 - product.discount_percent) / 100) }}
+                </span>
+
+                {% if product.discount_percent > 0 %}
+                    <span class="detail-old-price">₹{{ "%.0f"|format(product.price) }}</span>
+                    <span class="detail-discount-badge">{{ product.discount_percent }}% OFF</span>
+                {% endif %}
             </div>
 
             <p class="detail-description">{{ product.description }}</p>
 
+            {% if product.stock_quantity > 0 %}
+                <p class="stock-info">✅ In Stock ({{ product.stock_quantity }} available)</p>
+            {% else %}
+                <p class="stock-info stock-out">❌ Out of Stock</p>
+            {% endif %}
+
             <div class="detail-actions">
-                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.product_id) }}" style="flex:2;display:flex;gap:10px">
-                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" class="qty-input">
-                    <button type="submit" class="btn-detail-cart" style="flex:1">🛒 Add to Cart</button>
-                </form>
-                <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" class="btn-detail-wishlist" style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--dark)">❤️ Wishlist</a>
+                {% if product.stock_quantity > 0 %}
+                    <form
+                        method="POST"
+                        action="{{ url_for('add_to_cart', product_id=product.product_id) }}"
+                        class="detail-cart-form"
+                    >
+                        <input
+                            type="number"
+                            name="quantity"
+                            value="1"
+                            min="1"
+                            max="{{ product.stock_quantity }}"
+                            class="qty-input"
+                        >
+                        <button type="submit" class="btn-detail-cart">🛒 Add to Cart</button>
+                    </form>
+                {% else %}
+                    <button type="button" class="btn-detail-cart btn-disabled" disabled>
+                        Out of Stock
+                    </button>
+                {% endif %}
+
+                <a
+                    href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}"
+                    class="btn-detail-wishlist"
+                >
+                    ❤️ Wishlist
+                </a>
             </div>
 
             <div class="delivery-info">
@@ -42,12 +78,16 @@
                 <p>📦 7-Day Replacement Policy</p>
             </div>
 
-            <!-- ============ UNIQUE FEATURE 5: PRODUCT PASSPORT PREVIEW ============ -->
+            <!-- Product Passport Preview -->
             <div class="passport-preview-box">
                 <h3>📄 Digital Product Passport Enabled</h3>
-                <p>Purchasing this product generates a unique, verifiable digital registry tracking its entire lifecycle (authenticity, warranty, resale path).</p>
+                <p>
+                    Purchasing this product generates a unique, verifiable digital
+                    registry tracking its entire lifecycle (authenticity, warranty,
+                    resale path).
+                </p>
                 <div class="passport-icon-row">
-                    <span>🛡️ 1-Year Warranty</span>
+                    <span>🛡️ Warranty Tracked</span>
                     <span>✅ Verified Original</span>
                     <span>🔄 Direct Resale Portal</span>
                 </div>
@@ -58,18 +98,33 @@
 
     <!-- Related Products -->
     {% if related %}
-    <h3 class="section-title" style="margin-top: 60px;">Similar Products You Might Like</h3>
+    <h3 class="section-title feature-heading">Similar Products You Might Like</h3>
     <div class="product-grid">
         {% for p in related %}
-        <div class="product-card" onclick="window.location.href='/product/{{ p.product_id }}'" style="cursor: pointer;">
-            <div class="product-img">
-                {% if p.category_id == 1 %}🎧{% elif p.category_id == 2 %}👕{% else %}📚{% endif %}
-            </div>
+        <div class="product-card">
+            <a
+                href="{{ url_for('product_detail', product_id=p.product_id) }}"
+                class="product-image-link"
+            >
+                <div class="product-img">
+                    {{ product_image(p.category_id, p.name, 'card') }}
+                </div>
+            </a>
+
             <div class="product-body">
                 <span class="brand">{{ p.brand }}</span>
-                <h4>{{ p.name }}</h4>
+
+                <a
+                    href="{{ url_for('product_detail', product_id=p.product_id) }}"
+                    class="product-name-link"
+                >
+                    <h4>{{ p.name }}</h4>
+                </a>
+
                 <div class="price-row">
-                    <span class="price">₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}</span>
+                    <span class="price">
+                        ₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}
+                    </span>
                 </div>
             </div>
         </div>

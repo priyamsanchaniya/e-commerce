@@ -1,4 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
+import os
+from seed_products import seed_products
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime, timedelta
@@ -765,6 +767,23 @@ def handle_chat_message(data):
 def handle_disconnect():
     """Clean up on disconnect"""
     pass
-import os
+# ==================================================
+#        TEMP ADMIN ROUTE: SEED PRODUCTS
+# ==================================================
+@app.route('/admin/seed-products')
+def admin_seed_products():
+    token = request.args.get("token")
+    expected_token = os.environ.get("SEED_TOKEN")
+
+    if not expected_token or token != expected_token:
+        return jsonify({
+            "status": "error",
+            "message": "Unauthorized"
+        }), 403
+
+    target = int(request.args.get("target", 200))
+
+    result = seed_products(target)
+    return jsonify(result)
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=False)

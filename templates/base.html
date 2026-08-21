@@ -4,30 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ShopSocial{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
 <nav class="navbar">
     <div class="nav-container">
-        <a href="{{ url_for('home') }}" class="logo">🛒 ShopSocial</a>
+        <a href="{{ url_for('home') }}" class="logo">
+            <span class="logo-mark">S</span>
+            ShopSocial
+        </a>
+
+        <form action="{{ url_for('products') }}" method="GET" class="nav-search">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search for headphones, shoes, books..."
+                value="{{ request.args.get('search', '') }}"
+            >
+            <button type="submit">Search</button>
+        </form>
 
         <div class="nav-links">
             <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('products') }}">Products</a>
+            <a href="{{ url_for('products') }}">Shop</a>
             <a href="{{ url_for('cart') }}" class="cart-link">
                 Cart
-                {% if cart_count > 0 %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+                {% if cart_count and cart_count > 0 %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                {% endif %}
             </a>
 
             {% if user %}
                 <div class="user-menu">
-                    <span class="user-greeting">👤 {{ user.full_name.split()[0] }}</span>
+                    <span class="user-greeting">{{ user.full_name.split()[0] }}</span>
                     <div class="dropdown">
                         <a href="{{ url_for('profile') }}">My Profile</a>
                         <a href="{{ url_for('orders') }}">My Orders</a>
                         <a href="{{ url_for('my_passports') }}">My Passports</a>
                         <a href="{{ url_for('wishlist') }}">Wishlist</a>
+                        <a href="{{ url_for('social_cart_create') }}">Social Cart</a>
                         <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
                     </div>
                 </div>
@@ -57,15 +78,44 @@
 </main>
 
 <footer class="footer">
-    <p>🛒 <strong>ShopSocial</strong> — Social Cart & Digital Product Passport</p>
-    <p class="footer-sub">Diploma Micro Project © 2026</p>
+    <div class="footer-inner">
+        <div>
+            <h4>ShopSocial</h4>
+            <p>Group shopping + Digital Product Passports. Built as a diploma micro project.</p>
+        </div>
+        <div>
+            <h4>Shop</h4>
+            <a href="{{ url_for('products') }}">All Products</a>
+            <a href="{{ url_for('products', category='Electronics') }}">Electronics</a>
+            <a href="{{ url_for('products', category='Fashion') }}">Fashion</a>
+            <a href="{{ url_for('products', category='Books') }}">Books</a>
+        </div>
+        <div>
+            <h4>Account</h4>
+            {% if user %}
+                <a href="{{ url_for('orders') }}">Orders</a>
+                <a href="{{ url_for('wishlist') }}">Wishlist</a>
+                <a href="{{ url_for('my_passports') }}">Passports</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Create Account</a>
+            {% endif %}
+        </div>
+        <div>
+            <h4>Unique Features</h4>
+            <p>👥 Social Cart with live chat</p>
+            <p>📄 Product Passport + QR</p>
+            <p>🛡️ Warranty tracking</p>
+        </div>
+    </div>
+    <p class="footer-sub">Diploma Micro Project © 2026 · ShopSocial</p>
 </footer>
 
 <script>
-    setTimeout(() => {
-        document.querySelectorAll('.flash').forEach(el => {
+    setTimeout(function () {
+        document.querySelectorAll('.flash').forEach(function (el) {
             el.style.opacity = '0';
-            setTimeout(() => el.remove(), 400);
+            setTimeout(function () { el.remove(); }, 400);
         });
     }, 4000);
 </script>

@@ -1,57 +1,23 @@
 {% macro product_image(category_id, product_name='Product', size='card', product_id=0) %}
-
     {% set name = product_name|lower %}
-
-    {% if 'headphone' in name %}
+    {% if 'headphone' in name or 'earbud' in name %}
         {% set img = 'photo-1505740420928-5e560c06d30e' %}
-    {% elif 'earbud' in name %}
-        {% set img = 'photo-1590658268037-6bf12165a8df' %}
-    {% elif 'speaker' in name %}
-        {% set img = 'photo-1608043152269-423dbba4e7e1' %}
     {% elif 'watch' in name or 'band' in name %}
         {% set img = 'photo-1523275335684-37898b6baf30' %}
     {% elif 'mouse' in name %}
         {% set img = 'photo-1527814050087-3793815479db' %}
-    {% elif 'keyboard' in name %}
-        {% set img = 'photo-1587829741301-dc798b83add3' %}
-    {% elif 'laptop' in name %}
-        {% set img = 'photo-1496181133206-80ce9b88a853' %}
-    {% elif 'webcam' in name or 'camera' in name %}
-        {% set img = 'photo-1526170375885-4d8ecf77b99f' %}
-    {% elif 'power bank' in name or 'charger' in name or 'cable' in name %}
-        {% set img = 'photo-1609091839311-d5365f9ff1c5' %}
     {% elif 'shoe' in name or 'sneaker' in name %}
         {% set img = 'photo-1542291026-7eec264c27ff' %}
-    {% elif 't-shirt' in name or 'tshirt' in name %}
+    {% elif 't-shirt' in name or 'tshirt' in name or 'shirt' in name %}
         {% set img = 'photo-1521572163474-6864f9cf17ab' %}
-    {% elif 'shirt' in name %}
-        {% set img = 'photo-1596755094514-f87e34085b2c' %}
     {% elif 'jeans' in name or 'pant' in name %}
         {% set img = 'photo-1542272604-787c3835535d' %}
-    {% elif 'hoodie' in name or 'jacket' in name %}
-        {% set img = 'photo-1556821840-3a63f95609a7' %}
-    {% elif 'cap' in name %}
-        {% set img = 'photo-1588850561407-ed78c282e89b' %}
-    {% elif 'sunglass' in name %}
-        {% set img = 'photo-1511499767150-a48a237f0083' %}
-    {% elif 'belt' in name %}
-        {% set img = 'photo-1624222247344-550fb60583dc' %}
-    {% elif 'book' in name or 'guide' in name or 'handbook' in name or 'basics' in name or 'fundamental' in name %}
+    {% elif 'book' in name or 'guide' in name %}
         {% set img = 'photo-1512820790803-83ca734da794' %}
-    {% elif 'kettle' in name %}
+    {% elif 'kettle' in name or 'grinder' in name %}
         {% set img = 'photo-1594213114663-d94db9b17125' %}
-    {% elif 'grinder' in name or 'mixer' in name %}
-        {% set img = 'photo-1585515320310-259814833e62' %}
-    {% elif 'fan' in name %}
-        {% set img = 'photo-1567030361346-3b0a1b3b2c40' %}
-    {% elif 'lamp' in name or 'led' in name %}
-        {% set img = 'photo-1507473885765-e6ed057f782c' %}
-    {% elif 'bottle' in name %}
-        {% set img = 'photo-1602143407151-7111542de6e8' %}
-    {% elif 'cooker' in name or 'fryer' in name or 'toaster' in name %}
-        {% set img = 'photo-1556910103-1c02745aae4d' %}
-    {% elif 'iron' in name or 'vacuum' in name or 'heater' in name %}
-        {% set img = 'photo-1558618666-fcd25c85cd64' %}
+    {% elif 'laptop' in name %}
+        {% set img = 'photo-1496181133206-80ce9b88a853' %}
     {% elif category_id == 1 %}
         {% set img = 'photo-1498049794561-7780e7231661' %}
     {% elif category_id == 2 %}
@@ -62,20 +28,12 @@
         {% set img = 'photo-1556911220-bff31c812dba' %}
     {% endif %}
 
-    {% if size == 'detail' %}
-        {% set dim = 'w=800&h=600' %}
-    {% elif size == 'small' %}
-        {% set dim = 'w=200&h=200' %}
-    {% else %}
-        {% set dim = 'w=500&h=400' %}
-    {% endif %}
+    {% if size == 'detail' %}{% set dim = 'w=800&h=600' %}
+    {% elif size == 'small' %}{% set dim = 'w=200&h=200' %}
+    {% else %}{% set dim = 'w=500&h=400' %}{% endif %}
 
-    <img
-        src="https://images.unsplash.com/{{ img }}?{{ dim }}&fit=crop&q=80"
-        alt="{{ product_name }}"
-        class="product-photo"
-        loading="lazy"
-        onerror="this.src='https://picsum.photos/seed/{{ product_id }}/500/400'"
-    >
-
+    <img src="https://images.unsplash.com/{{ img }}?{{ dim }}&fit=crop&q=80"
+         alt="{{ product_name }}"
+         class="product-photo product-photo-{{ size }}" loading="lazy"
+         onerror="this.src='https://picsum.photos/seed/{{ product_id }}/500/400'">
 {% endmacro %}

@@ -1963,3 +1963,220 @@ body {
     font-weight: 800;
 }
 .delivery-info { color: #64748b; font-size: .9rem; border-top: 1px solid #eef0f6; padding-top: 16px; }
+/* =====================================================
+   FINAL SOCIAL CART OVERFLOW / OVERLAP FIX
+===================================================== */
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Main social cart wrapper */
+.sc-page {
+    width: 100%;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 40px 20px 70px;
+    overflow: hidden;
+}
+
+/* Main left-right layout */
+.sc-page .sc-layout {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr) !important;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Important: allows grid columns to shrink */
+.sc-page .sc-left,
+.sc-page .sc-right {
+    min-width: 0 !important;
+    width: 100%;
+}
+
+/* Prevent sections from exceeding their column */
+.sc-page .sc-section {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Product picker: safe two-column grid */
+.sc-page .sc-product-picker {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+}
+
+/* Each product item must be allowed to shrink */
+.sc-page .sc-picker-item {
+    width: 100%;
+    min-width: 0 !important;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+/* Product image */
+.sc-page .sc-picker-img {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 9px;
+    background: #f1f5f9;
+}
+
+.sc-page .sc-picker-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Product name area */
+.sc-page .sc-picker-info {
+    flex: 1 1 auto;
+    min-width: 0 !important;
+    overflow: hidden;
+}
+
+.sc-page .sc-picker-info strong {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #111827;
+    font-size: .78rem;
+}
+
+.sc-page .sc-picker-info span {
+    display: block;
+    color: #5b4fe8;
+    font-size: .78rem;
+    font-weight: 800;
+}
+
+/* Quantity and Add controls */
+.sc-page .sc-qty-input {
+    width: 46px;
+    min-width: 46px;
+    flex-shrink: 0;
+    padding: 7px 3px;
+    text-align: center;
+}
+
+.sc-page .sc-add-btn {
+    min-width: 48px;
+    flex-shrink: 0;
+    padding: 8px 9px;
+}
+
+/* Current cart item */
+.sc-page .sc-item {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.sc-page .sc-item-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.sc-page .sc-item-info strong {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Chat and summary should remain inside right column */
+.sc-page .sc-chat-section,
+.sc-page .sc-summary {
+    width: 100%;
+    min-width: 0;
+}
+
+.sc-page .sc-chat-box {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sc-page .sc-chat-input {
+    width: 100%;
+    min-width: 0;
+}
+
+.sc-page .sc-chat-input input {
+    min-width: 0;
+    width: 100%;
+}
+
+/* Header should not overflow */
+.sc-page .sc-header {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Discount banner should wrap safely */
+.sc-page .sc-discount-banner {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Tablet */
+@media (max-width: 1050px) {
+    .sc-page .sc-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(290px, .8fr) !important;
+        gap: 16px;
+    }
+
+    .sc-page .sc-product-picker {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+    .sc-page {
+        padding: 28px 14px 50px;
+    }
+
+    .sc-page .sc-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100%;
+    }
+
+    .sc-page .sc-left,
+    .sc-page .sc-right {
+        width: 100%;
+    }
+
+    .sc-page .sc-product-picker {
+        grid-template-columns: 1fr !important;
+    }
+
+    .sc-page .sc-summary {
+        position: static !important;
+    }
+
+    .sc-page .sc-share {
+        text-align: left;
+    }
+}

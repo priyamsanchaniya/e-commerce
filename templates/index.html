@@ -1,454 +1,376 @@
 {% extends "base.html" %}
 {% from "_macros.html" import product_image %}
 
-{% block title %}ShopSocial - Home{% endblock %}
+{% block title %}ShopSocial - The Future of Shopping{% endblock %}
 
 {% block content %}
 
-<section class="hero">
-    <h1>Welcome to ShopSocial</h1>
+<!-- ============ HERO SECTION WITH FLOATING PRODUCT IMAGES ============ -->
 
-    <p>
-        Shop together with friends 🛍️ •
-        Get verified product history 📄
-    </p>
+<section class="hero-section">
+    <div class="container max-w-lg">
+        <div class="row align-items-center gx-5">
+            
+            <div class="col-lg-6 col-md-12">
+                <h1 class="hero-title" data-aos="fade-up">
+                    Welcome to 
+                    <span class="text-primary fw-bold display-5">
+                        ShopSocial
+                    </span>
+                    .
+                </h1>
+                <p class="hero-subtitle lead text-muted mb-4" data-aos="fade-up" data-aos-delay="200">
+                    India’s first <strong>e-commerce</strong> platform featuring 
+                    <span class="text-danger fw-bold">Social Cart (Group Buying)</span> + 
+                    <span class="text-success fw-bold">Digital Product Passport</span>.
+                </p>
 
-    {% if user %}
-        <p class="hero-welcome">
-            Great to see you,
-            <strong>{{ user.full_name }}</strong>!
-        </p>
-
-        <div class="hero-buttons">
-            <a
-                href="{{ url_for('products') }}"
-                class="btn-hero"
-            >
-                Start Shopping
-            </a>
-
-            <a
-                href="{{ url_for('social_cart_create') }}"
-                class="btn-hero btn-outline"
-            >
-                👥 Create Social Cart
-            </a>
-        </div>
-    {% else %}
-        <div class="hero-buttons">
-            <a
-                href="{{ url_for('register') }}"
-                class="btn-hero"
-            >
-                Get Started Free
-            </a>
-
-            <a
-                href="{{ url_for('login') }}"
-                class="btn-hero btn-outline"
-            >
-                Login
-            </a>
-        </div>
-    {% endif %}
-</section>
-
-
-<section class="page-container">
-
-    <!-- ================= CATEGORIES ================= -->
-
-    <h2 class="section-title">
-        Shop by Category
-    </h2>
-
-    <div class="category-grid">
-
-        {% for cat in categories %}
-
-            <a
-                href="{{ url_for('products', category=cat.name) }}"
-                class="category-card"
-            >
-
-                <div class="cat-icon">
-                    {% if cat.name == 'Electronics' %}
-                        📱
-                    {% elif cat.name == 'Fashion' %}
-                        👕
-                    {% elif cat.name == 'Books' %}
-                        📚
-                    {% elif cat.name == 'Home Appliances' %}
-                        🏠
+                <div class="hero-buttons d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="400">
+                    {% if user %}
+                        <a href="{{ url_for('products') }}" class="btn btn-primary btn-hero">
+                            Browse Products
+                        </a>
+                        <a href="{{ url_for('social_cart_create') }}" class="btn btn-outline btn-outline-success">
+                            👥 Create Social Cart
+                        </a>
                     {% else %}
-                        🛍️
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-hero">
+                            Sign Up Free
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-dark">
+                            Login
+                        </a>
                     {% endif %}
                 </div>
+            </div>
 
-                <h4>
-                    {{ cat.name }}
-                </h4>
-
-            </a>
-
-        {% endfor %}
-
+            <!-- Right side: Hero Image with floating element -->
+            <div class="col-lg-6 col-md-12">
+                <div class="hero-image-container aos-init" data-aos="fade-left">
+                    <img src="https://images.unsplash.com/photo-1472851296193-37bd0ee77744d8edded6cdb942b6238.png" 
+                         alt="Group Shopping" 
+                         class="img-fluid hero-image" 
+                         data-aos="zoom-out">
+                    
+                    <!-- Floating badge -->
+                    <div class="floating-badge text-warning" data-aos="fade-right" data-aos-delay="700">
+                        <span class="badge-label">SALE</span>
+                        <span class="badge-value text-black">OFF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
 
 
-    <!-- ================= PRODUCTS ================= -->
+<!-- ============ FEATURE GRID SHOWCASING UNIQUE FEATURES ============ -->
 
-    <div class="section-head">
-
-        <h2 class="section-title">
-            Featured Products
+<section class="features-area">
+    <div class="container max-w-lg my-60 text-center" id="features" data-aos="fade-up">
+        <h2 class="section-heading" data-aos="fade-right">
+            <span class="text-primary">Why Choose</span> ShopSocial?
         </h2>
 
-        <a
-            href="{{ url_for('products') }}"
-            class="view-all"
-        >
-            View All →
-        </a>
+        <div class="row" data-aos="fade-right" data-aos-delay="200">
+            <div class="col-12 col-lg-4 mb-30 mb-lg-30">
+                <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="feature-card-icon">
+                        👥
+                    </div>
+                    <h4 class="mt-3 mb-2 text-capitalize">Social Cart</h4>
+                    <p class="text-muted">
+                        Invite friends, get group discounts automatically,
+                        chat live, checkout together.
+                    </p>
+                </div>
+            </div>
 
+            <div class="col-12 col-lg-4 mb-30 mb-lg-30">
+                <div class="feature-card feature-card-2" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="feature-card-icon">
+                        📄
+                    </div>
+                    <h4 class="mt-3 mb-2">Product Passport</h4>
+                    <p class="text-muted">
+                        Digital identity card for every purchased item.
+                        Authenticity, warranty, full history.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4 mb-30 mb-lg-30">
+                <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="feature-card-icon">
+                        ⏱
+                    </div>
+                    <h4 class="mt-3 mb-2">Auto Checkout</h4>
+                    <p class="text-muted">
+                        Skip steps, save addresses, pay securely in one click.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
 
+<!-- ============ CATEGORIES GRID ============ -->
 
-    {% if products %}
+<section class="cat-area" id="categories">
+    <div class="container max-w-lg">
+        <h3 class="section-title section-title" data-aos="fade-up">
+            Shop by Category
+        </h3>
+        
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            {% for cat in categories %}
+            <div class="col-12 col-lg-3 col-md-4 mb-30 px-4">
+                <div class="category-card category-card" data-aos="fade-right" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="category-icon">
+                        {% if cat.name == 'Electronics' %}🎧{% elif cat.name == 'Fashion' %}👔{% elif cat.name == 'Books' %}📚{% else %}🍴{% endif %}
+                    </div>
+                    <h5 class="category-title">{{ cat.name }}</h5>
+                    <a href="{{ url_for('products', category=cat.name) }}" class="stretched-link">Explore Items →</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
-        <div class="product-grid">
+<!-- ============ FEATURED PRODUCTS GRID ============ -->
 
-            {% for p in products %}
+<section class="section-padding-100 pb-70" id="products">
+    <div class="container max-w-lg">
+        <h3 class="section-title mt-5" data-aos="fade-up">
+            Featured Products 
+            <span class="bg-danger text-white px-3 rounded-pill mr-2">SALE</span>
+        </h3>
 
-                <div class="product-card">
+        <div class="product-grid" data-aos="fade-up">
+            {% for p in products[:8] %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <a href="{{ url_for('product_detail', product_id=p.product_id) }}" class="product-image-link">
+                    <div class="product-img-box">
+                        {{ product_image(p.category_id, p.name, 'card') }}
+                        {% if p.discount_percent > 0 %}
+                            <span class="corner-badge">-{{ p.discount_percent }}%</span>
+                        {% endif %}
+                    </div>
+                </a>
 
-                    <!-- Product image -->
-                    <a
-                        href="{{ url_for('product_detail', product_id=p.product_id) }}"
-                        class="product-image-link"
-                    >
+                <div class="product-content">
+                    <div class="brand">{{ p.brand }}</div>
 
-                        <div class="product-img">
-
-                            {{ product_image(
-                                p.category_id,
-                                p.name,
-                                'card'
-                            ) }}
-
-                            {% if p.discount_percent > 0 %}
-                                <span class="corner-badge">
-                                    {{ p.discount_percent }}% OFF
-                                </span>
-                            {% endif %}
-
-                        </div>
-
+                    <a href="{{ url_for('product_detail', product_id=p.product_id) }}" class="product-title-link">
+                        <h5>{{ p.name }}</h5>
                     </a>
 
-
-                    <div class="product-body">
-
-                        <span class="brand">
-                            {{ p.brand }}
-                        </span>
-
-
-                        <a
-                            href="{{ url_for('product_detail', product_id=p.product_id) }}"
-                            class="product-name-link"
-                        >
-                            <h4>
-                                {{ p.name }}
-                            </h4>
-                        </a>
-
-
-                        <p class="desc">
-                            {{ p.description }}
-                        </p>
-
-
-                        <div class="price-row">
-
-                            <span class="price">
-                                ₹{{ "%.0f"|format(
-                                    p.price *
-                                    (100 - p.discount_percent) /
-                                    100
-                                ) }}
+                    <div class="price-box d-flex">
+                        {% if p.discount_percent > 0 %}
+                            <span class="new-price text-primary">
+                                ₹{{ "%.0f"|format(p.price * (100 - p.discount_percent) / 100) }}
                             </span>
-
-
-                            {% if p.discount_percent > 0 %}
-
-                                <span class="old-price">
-                                    ₹{{ "%.0f"|format(p.price) }}
-                                </span>
-
-                                <span class="discount">
-                                    {{ p.discount_percent }}% off
-                                </span>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- Product actions -->
-
-                        {% if p.stock_quantity > 0 %}
-
-                            <div class="card-actions">
-
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'add_to_cart',
-                                        product_id=p.product_id
-                                    ) }}"
-                                    class="product-cart-form"
-                                >
-
-                                    <button
-                                        type="submit"
-                                        class="btn-cart"
-                                    >
-                                        🛒 Add to Cart
-                                    </button>
-
-                                </form>
-
-
-                                <a
-                                    href="{{ url_for(
-                                        'add_to_wishlist',
-                                        product_id=p.product_id
-                                    ) }}"
-                                    class="btn-heart"
-                                    title="Add to Wishlist"
-                                >
-                                    ❤️
-                                </a>
-
-                            </div>
-
+                            <del class="old-price text-muted">₹{{ "%.0f"|format(p.price) }}</del>
                         {% else %}
-
-                            <button
-                                type="button"
-                                class="btn-cart btn-disabled"
-                                disabled
-                            >
-                                Out of Stock
-                            </button>
-
+                            <span class="new-price text-primary">₹{{ "%.0f"|format(p.price) }}</span>
                         {% endif %}
 
+                        <span class="discount-badge bg-danger text-white">
+                            -{{ p.discount_percent }}%
+                        </span>
                     </div>
 
+                    <div class="action-bar d-flex align-items-center gap-3">
+                        <button
+                            class="btn-cart"
+                            formmethod="POST"
+                            action="{{ url_for('add_to_cart', product_id=p.product_id) }}"
+                            type="submit"
+                        >
+                            🛒 Add to Cart
+                        </button>
+
+                        <a href="{{ url_for('add_to_wishlist', product_id=p.product_id) }}" class="wishlist-btn">
+                            ♡
+                        </a>
+                    </div>
+
+                    <div class="extra-info">
+                        <span class="stock-status text-success">
+                            ✔ In Stock
+                        </span>
+                        <span class="rating-star">
+                            ★★★★☆☆ {{ "%.1f"|format(p.avg_rating) }} ({{ p.total_reviews }})
+                        </span>
+                    </div>
                 </div>
-
+            </div>
             {% endfor %}
-
         </div>
 
-    {% else %}
-
-        <div class="empty-state">
-
-            <h3>
-                No products available 📦
-            </h3>
-
-            <p>
-                Please check back soon.
-            </p>
-
+        <div class="view-all-btn text-center" data-aos="fade-up">
+            <a href="{{ url_for('products') }}" class="btn-view-all" role="button">
+                View All Products →
+            </a>
         </div>
-
-    {% endif %}
-
-
-    <!-- ================= UNIQUE FEATURES ================= -->
-
-    <h2 class="section-title feature-heading">
-        Why ShopSocial?
-    </h2>
-
-
-    <div class="feature-grid">
-
-        <div class="feature-card feature-social">
-
-            <div class="feature-icon">
-                👥
-            </div>
-
-            <h3>
-                Social Cart
-            </h3>
-
-            <p>
-                Create a shared shopping cart and invite your friends.
-                The more people who join, the larger the group
-                discount becomes.
-            </p>
-
-            <div class="feature-tiers">
-
-                <span>
-                    2 members → 5% OFF
-                </span>
-
-                <span>
-                    3–4 members → 10% OFF
-                </span>
-
-                <span>
-                    5+ members → 15% OFF
-                </span>
-
-            </div>
-
-            {% if user %}
-                <a
-                    href="{{ url_for('social_cart_create') }}"
-                    class="feature-action"
-                >
-                    Create Social Cart →
-                </a>
-            {% endif %}
-
-        </div>
-
-
-        <div class="feature-card feature-passport">
-
-            <div class="feature-icon">
-                📄
-            </div>
-
-            <h3>
-                Digital Product Passport
-            </h3>
-
-            <p>
-                Each purchased product receives a verified digital
-                identity containing authenticity information,
-                warranty details and ownership history.
-            </p>
-
-
-            <div class="feature-tiers">
-
-                <span>
-                    ✅ Authenticity
-                </span>
-
-                <span>
-                    🛡️ Warranty
-                </span>
-
-                <span>
-                    🔄 Ownership
-                </span>
-
-            </div>
-
-
-            {% if user %}
-                <a
-                    href="{{ url_for('my_passports') }}"
-                    class="feature-action"
-                >
-                    My Passports →
-                </a>
-            {% endif %}
-
-        </div>
-
     </div>
-
-
-    <!-- ================= HOW IT WORKS ================= -->
-
-    <h2 class="section-title feature-heading">
-        How It Works
-    </h2>
-
-
-    <div class="steps-grid">
-
-        <div class="step-card">
-
-            <div class="step-num">
-                1
-            </div>
-
-            <h4>
-                Browse
-            </h4>
-
-            <p>
-                Search products and explore different categories.
-            </p>
-
-        </div>
-
-
-        <div class="step-card">
-
-            <div class="step-num">
-                2
-            </div>
-
-            <h4>
-                Add to Cart
-            </h4>
-
-            <p>
-                Add products to your personal or social cart.
-            </p>
-
-        </div>
-
-
-        <div class="step-card">
-
-            <div class="step-num">
-                3
-            </div>
-
-            <h4>
-                Checkout
-            </h4>
-
-            <p>
-                Enter delivery details and place your order.
-            </p>
-
-        </div>
-
-
-        <div class="step-card">
-
-            <div class="step-num">
-                4
-            </div>
-
-            <h4>
-                Product Passport
-            </h4>
-
-            <p>
-                Receive a Digital Product Passport after purchase.
-            </p>
-
-        </div>
-
-    </div>
-
 </section>
+
+<!-- ============ HOW IT WORKS SECTIONS ============ -->
+
+<section class="how-it-works padding-btm" id="how-it-works">
+    <div class="container max-w-lg">
+        <h3 class="text-center mb-50" data-aos="fade-up">
+            <span class="text-primary fw-bold">How It Works?</span>
+        </h3>
+
+        <div class="row" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4 mb-4">
+                <div class="work-card" data-aos="zoom-in">
+                    <div class="work-icon" style="
+                        width: 64px;
+                        height: 64px;
+                        margin-bottom: 20px;
+                        background: linear-gradient(135deg,#fff7fe,#e0e6ff);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 9999;
+                    ">
+                        📝
+                    </div>
+                    <h5>Create or Join Cart</h5>
+                    <p class="work-desc">
+                        Create a shared cart session instantly or join a friend's link to buy together and unlock massive group discounts.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="work-card" data-aos="zoom-in">
+                    <div class="work-icon" style="
+                        width: 64px;
+                        height: 64px;
+                        margin-bottom: 20px;
+                        background: linear-gradient(135deg,#feeafe,#dcfadf);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 9999;
+                    ">
+                        💰
+                    </div>
+                    <h5>Pay Together</h5>
+                    <p class="work-desc">
+                        Each person pays only their share. One person checks out for everyone.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="work-card" data-aos="zoom-in">
+                    <div class="work-icon" style="
+                        width: 64px;
+                        height: 64px;
+                        margin-bottom: 20px;
+                        background: linear-gradient(135deg,#ffd3e3,#ffe0ec);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 9999;
+                    ">
+                        📄
+                    </div>
+                    <h5>Get Passports</h5>
+                    <p class="work-desc">
+                        Every purchase generates a unique Digital Passport with QR code, warranty dates, and authenticity records.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="work-card" data-aos="zoom-in">
+                    <div class="work-icon" style="
+                        width: 64px;
+                        height: 64px;
+                        margin-bottom: 20px;
+                        background: linear-gradient(135deg,#dbfefd,#eff8ff);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 9999;
+                    ">
+                        ✅
+                    </div>
+                    <h5>Share With Friends</h5>
+                    <p class="work-desc">
+                        Share your cart link via WhatsApp/Social Media directly into the group chat to discuss before buying.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ TRUST BANNERS ============ -->
+
+<section class="trust-banners-section" data-aos="fade-up">
+    <div class="container trust-banners">
+        <div class="banner-1 d-lg" data-aos="fade-up">
+            <div class="banner-inner text-center">
+                <div class="banner-header">
+                    <span class="text-primary fw-bold">✅ 200+ Genuine Brands</span>
+                    <span class="badge bg-danger p-2 ms-2">Verified Original</span>
+                    <p class="text-muted small">
+                        All products are 100% authentic and come with manufacturer warranty.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="banner-2 d-lg" data-aos="fade-up" data-aos-delay="100">
+            <div class="banner-inner text-center">
+                <div class="banner-header">
+                    <span class="text-success fw-bold">⚡ 15-Day Returns</span>
+                    <p class="text-muted small">
+                        Not satisfied? Return within 15 days hassle-free.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="banner-3 d-lg" data-aos="fade-up" data-aos-delay="200">
+            <div class="banner-inner text-center">
+                <div class="banner-header">
+                    <span class="text-danger fw-bold">🔒 Secure Payments</span>
+                    <p class="text-muted small">
+                        Your payment info is encrypted and safe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FOOTER NEWSLET ============
+
+<div class="news-section section-padding-tb">
+    <div class="container max-w-lg">
+        <div class="newsletter-wrapper" data-aos="fade-up">
+            <h3 class="section-title text-center mt-5 mb-40" data-aos="fade-up">
+                Subscribe to our Newsletter
+            </h3>
+
+            <p class="text-center text-muted" data-aos="fade-up" data-aos-delay="100">
+                Get updates on new arrivals and exclusive offers delivered right to your inbox!
+            </p>
+
+            <form class="input-group" data-aos="fade-up" data-aos-delay="100">
+                <input type="email" name="email" class="form-control input-control-newsletter rounded-pill" placeholder="Enter your email...">
+                <button type="submit" class="btn btn-primary rounded-pill">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
